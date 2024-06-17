@@ -55,7 +55,12 @@
           marker100: 100
       };
 
-      const alunoDinheiro = 50
+      let alunoDinheiro;
+
+
+      function receiveMessageFromFlutter(quantia) {
+        alunoDinheiro = quantia;
+  }
 
       // Função para lidar com a detecção de markers
       document.querySelectorAll('a-marker').forEach(marker => {
