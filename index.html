@@ -73,7 +73,7 @@
             const value = markerValues[marker.id];
 
             newChar.setAttribute('animation-mixer', 'clip: Idle');
-
+            
             if (alunoDinheiro < value){
               setTimeout(()=>newChar.setAttribute('animation-mixer', 'clip: Dyning; loop:once; clampWhenFinished:true; crossFadeDuration:1'), 1500)
             }else if (alunoDinheiro === value){
@@ -90,11 +90,19 @@
       });
 
 
-      function novoPersonagem(){
+    function novoPersonagem(nome){
+        if(nome == undefined) {
+          //nome = "maga todas as animaçoes";
+          //nome = "personagemLegal";
+          //nome = "dansing";
+          //nome = "maga feliz";
+          nome = "maga";
+        }
+
         const newChar = document.createElement('a-entity');
         newChar.setAttribute('position', '1 0 0');
-        newChar.setAttribute('scale', '1 1 1');
-        newChar.setAttribute('gltf-model', 'assets/personagemLegal.gltf');
+        newChar.setAttribute('scale', '0.1 0.1 0.1');
+        newChar.setAttribute('gltf-model', `assets/${nome}.gltf`);
         newChar.setAttribute('rotation', '0 0 0');
         newChar.setAttribute('animation-mixer', 'clip: Idle; loop: repeat');
         return newChar;
