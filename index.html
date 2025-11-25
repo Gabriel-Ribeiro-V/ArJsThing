@@ -38,36 +38,31 @@
 </head>
 
 <body style="margin : 0px; overflow: hidden;">
-  <a-scene background="color: gray" vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+  <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; debugUIEnabled: false;">
     <a-assets>
-      <img id="painel20" src="assets/20.png">
-      <img id="painel50" src="assets/50.png">
-      <img id="painel100" src="assets/100.png">
+      <img id="marker20" src="assets/markers/20.png">
+      <img id="marker50" src="assets/markers/50.png">
+      <img id="marker100" src="assets/markers/100.png">
       <gltf-model id="maga-model" src="assets/3D models/maga/maga.gltf"></gltf-model>
     </a-assets>
 
-    <a-marker preset='custom' type='pattern' url='assets/markers/pattern-20.patt' id="marker20">
-      <a-plane src="#painel20" height="1" width="1" rotation="0 0 0" position="0 1 0"></a-plane>
-    </a-marker>
-    <a-marker preset='custom' type='pattern' url='assets/markers/pattern-50.patt' id="marker50">
-      <a-plane src="#painel50" height="1" width="1" rotation="0 0 0" position="0 1 0"></a-plane>
-    </a-marker>
-    <a-marker preset='custom' type='pattern' url='assets/markers/pattern-100.patt' id="marker100">
-      <a-plane src="#painel100" height="1" width="1" rotation="0 0 0" position="0 1 0"></a-plane>
-    </a-marker>
+    <a-marker preset='custom' type='pattern' url='assets/markers/pattern-20.patt' id="amarker20"></a-marker>
+    <a-marker preset='custom' type='pattern' url='assets/markers/pattern-50.patt' id="amarker50"></a-marker>
+    <a-marker preset='custom' type='pattern' url='assets/markers/pattern-100.patt' id="amarker100"></a-marker>
 
-    <a-entity camera position="0 .1 .4"></a-entity>
+    <a-entity camera></a-entity>
+    <a-entity light="type: ambient"></a-entity>
   </a-scene>
 
   <script>
-    let alunoDinheiro = 0;
+    let alunoDinheiro = 200;
     let personagemSelecionado = undefined;
 
     // Defina os valores numéricos associados a cada marker
     const markerValues = {
-      marker20: 20,
-      marker50: 50,
-      marker100: 100
+      amarker20: 20,
+      amarker50: 50,
+      amarker100: 100
     };
 
     function setQuantia(quantia) {
@@ -81,6 +76,15 @@
     // Função para lidar com a detecção de markers
     document.querySelectorAll('a-marker').forEach(marker => {
       var currentChar;
+
+      const plane = document.createElement('a-plane');
+      plane.setAttribute('src', `#marker${marker.id.replace('amarker', '')}`);
+      plane.setAttribute('height', '1');
+      plane.setAttribute('width', '1');
+      plane.setAttribute('rotation', '-90 0 0');
+      plane.setAttribute('position', '0 -.1 0');
+      marker.appendChild(plane);
+
       marker.addEventListener('markerFound', (event) => {
 
         if (event.target.id !== marker.id) return;
@@ -91,11 +95,11 @@
         const value = markerValues[marker.id];
 
         if (alunoDinheiro < value) {
-          setTimeout(() => newChar.setAttribute('animation-mixer', 'clip: Dyning; loop: once; clampWhenFinished:true; crossFadeDuration:1'), 1500)
+          newChar.setAttribute('animation-mixer', 'clip: Dyning; loop: once; clampWhenFinished:true; crossFadeDuration:1')
         } else if (alunoDinheiro === value) {
-          setTimeout(() => newChar.setAttribute('animation-mixer', 'clip: Dancing; loop: repeat; crossFadeDuration:1'), 1500)
+          newChar.setAttribute('animation-mixer', 'clip: Dancing; loop: repeat; crossFadeDuration:1')
         } else {
-          setTimeout(() => newChar.setAttribute('animation-mixer', 'clip: Flair; loop: repeat; crossFadeDuration:0.1'), 1500);
+          newChar.setAttribute('animation-mixer', 'clip: Flair; loop: repeat; crossFadeDuration:0.1')
         }
       });
 
@@ -112,10 +116,10 @@
       }
 
       const newChar = document.createElement('a-entity');
-      newChar.setAttribute('gltf-model', `assets/3D models/${nome}/${nome}.gltf`);
-      newChar.setAttribute('unlit');
-      newChar.setAttribute('position', '1 0 0');
-      newChar.setAttribute('scale', '0.1 0.1 0.1');
+      newChar.setAttribute('gltf-model', `#maga-model`);
+      newChar.setAttribute('unlit', '');
+      newChar.setAttribute('position', '0 0 0');
+      newChar.setAttribute('scale', '1 1 1');
       newChar.setAttribute('rotation', '0 0 0');
       return newChar;
     }
