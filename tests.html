@@ -1,0 +1,76 @@
+<!DOCTYPE application/html>
+<html>
+  
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+
+  <body style="margin : 0px; overflow: hidden;">
+    <a-scene embedded arjs>
+
+
+      <a-marker preset='custom' type='pattern' url='assets/markers/pattern-20.patt' id="marker20">
+      </a-marker>
+        
+      <a-marker preset='custom' type='pattern' url='assets/markers/pattern-50.patt' id="marker50">
+      </a-marker>
+        
+      <a-marker preset='custom' type='pattern' url='assets/markers/pattern-100.patt' id="marker100">
+      </a-marker>
+
+
+
+      <a-entity camera></a-entity>
+    </a-scene>
+    
+    <script>
+      // Defina os valores numéricos associados a cada marker
+      const markerValues = {
+          marker20: 20,
+          marker50: 50,
+          marker100: 100
+      };
+
+      let valor = 50;
+
+      // Função para lidar com a detecção de markers
+      document.querySelectorAll('a-marker').forEach(marker => {
+        var currentChar;
+          marker.addEventListener('markerFound', (event) => {
+            if (event.target.id !== marker.id) return;
+            const newChar = novoPersonagem();
+            currentChar = newChar;
+            marker.appendChild(newChar);
+            const value = markerValues[marker.id];
+
+            newChar.setAttribute('animation-mixer', 'clip: Idle');
+
+            if (valor < value){
+              setTimeout(()=>newChar.setAttribute('animation-mixer', 'clip: Idle; loop:repeat; crossFadeDuration:1'), 1500)
+            }else if (alunoDinheiro === value){
+              setTimeout(()=>newChar.setAttribute('animation-mixer', 'clip: Die; loop: repeat; crossFadeDuration:1'), 1500)
+            }else{
+              setTimeout(()=>newChar.setAttribute('animation-mixer', 'clip: Enough; loop: repeat; crossFadeDuration:0.1'), 1500);
+            }
+        });
+
+        marker.addEventListener('markerLost', (event) => {
+          if (event.target.id !== marker.id) return;
+          marker.removeChild(currentChar);
+        });
+      });
+
+
+      function novoPersonagem(){
+        const newChar = document.createElement('a-entity');
+        newChar.setAttribute('position', '1 0 0');
+        newChar.setAttribute('scale', '.2 .2 .2');
+        newChar.setAttribute('gltf-model', './assets/chars/Maga2.glb');
+        newChar.setAttribute('rotation', '0 0 0');
+        newChar.setAttribute('animation-mixer', 'clip: Idle; loop: repeat');
+        return newChar;
+      }
+    </script>
+  </body>
+</html>
